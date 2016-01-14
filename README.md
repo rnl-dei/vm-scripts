@@ -1,6 +1,11 @@
-## create-gentoo-vm.sh
+## create-vm.sh
 
-Interactive script to create a new VM based on options given and the ``neo`` image.
+Interactive script to create new ready to use VMs with support for:
+  * Questions to choose options like CPU number, memory size, etc.
+  * Automatic network configuration based on the DNS name match
+  * Creation of disks in files and LVM logical volumes
+  * OS base image installation from a tarball
+  * Scripted base image customization for each OS
 
 ## create-stage4.sh
 
@@ -13,3 +18,7 @@ Show a resumed list of the VMs configured, with state, autostart, CPUs, memory a
 ## ksm_status.sh
 
 Show the current usage of the kernel same-page merging.
+
+## create-gentoo-vm.sh
+
+Old VM creation script to create a new VM based on options given and the ``neo`` image.
