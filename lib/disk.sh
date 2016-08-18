@@ -17,12 +17,14 @@ function get_disk_type() {
 			disk_write=all
 
 			if [ -a "$disk_location" ]; then
-				warning "A disk file with the name $disk_name.img already exists!"
+				local size=$(file_human_size $disk_location)
+				warning "A disk file with the name $disk_name.img already exists! ($size)"
 				echo "What do you want to do?"
 				echo "  1 - Choose a different name."
 				echo "  2 - Use the existing disk without touching it (WARNING: The MAC address on /etc/udev/rules.d/ will need an update)"
 				echo "  3 - Use the existing disk and customize it"
-				echo "  4 - Overwrite the existing disk"
+				echo "  4 - Overwrite the existing disk (keeps the same size)"
+				echo "  5 - Remove and create a new disk"
 				echo "  0 - Flip the table."
 
 				prompt "?" OPTION
@@ -41,6 +43,11 @@ function get_disk_type() {
 						;;
 					4)
 						disk_write=format
+						;;
+					5)
+						disk_write=all
+						warning "NOT TESTED BYE"
+						exit
 						;;
 					0)
 						echo "Bye bye..."
@@ -211,6 +218,10 @@ function format_disk() {
 	#mkfs.ext4 -F -E lazy_itable_init=0 -E nodiscard -L "${NAME}_root" $DISK_FILE 2>&1 | quote_output
 	echo "Formating $path to ext4..."
 	mkfs.ext4 -F -E nodiscard -L "${name}_root" $path 2>&1 | quote_output
+}
+
+function file_human_size() {
+	ls -l --block-size=G $1 | awk '{print $5}'
 }
 
 function is_mounted() {
