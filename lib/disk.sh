@@ -80,7 +80,7 @@ function get_disk_fs_action() {
 		1) # Template
 			get_os_template OS_TEMPLATE
 
-			fs_template_script=${LIB_LOCATION}/templates/os?_${OS_TEMPLATE}.sh
+			fs_template_script=${TEMPLATES_LOCATION}/os?_${OS_TEMPLATE}.sh
 
 			if [ ! -f $fs_template_script ]; then
 				warning "Could not find $fs_template_script for some reason"
@@ -139,7 +139,7 @@ function get_os_template() {
 	local os_template_var=$1
 	local os_template=none
 
-	local os_scripts=${LIB_LOCATION}/templates/os?_*.sh
+	local os_scripts=${TEMPLATES_LOCATION}/os?_*.sh
 	echo "What template do you want to use?"
 
 	local i=1
@@ -168,7 +168,7 @@ function guess_script_template() {
 	local mountpoint=$1
 
 	local os=$(awk -F '=' '/ID/{print $2}' ${mountpoint}/etc/os-release)
-	local os_script=${LIB_LOCATION}/templates/os?_${os}.sh
+	local os_script=${TEMPLATES_LOCATION}/os?_${os}.sh
 
 	echo "The new VM seems to have a ${os} filesystem."
 	prompt "Do you want to costumize it with the script ${os_script}?" CUSTOMIZE Y

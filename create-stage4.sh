@@ -15,10 +15,15 @@ EXCLUDE="
 ./tmp/*
 ./lost+found/*
 "
+# allows patterns which match no files to expand to a null string, rather than themselves
+shopt -s nullglob
 
-LIB_LOCATION="lib"
-source ${LIB_LOCATION}/util.sh
-source ${LIB_LOCATION}/disk.sh
+LIB_SCRIPTS="lib/*.sh /usr/local/libexec/vm-scripts/lib/*.sh /usr/libexec/vm-scripts/lib/*.sh"
+
+### Include other files ###
+for file in ${LIB_SCRIPTS}; do
+	source $file
+done
 
 function tar_cmd {
 	echo "tar cjf - --totals=USR1 -C $1 . --one-file-system --exclude-backups --exclude-from=-"

@@ -17,14 +17,14 @@ function customize_disk {
 		exit
 	fi
 
-	source ${LIB_LOCATION}/templates/generic.sh
+	source ${TEMPLATES_LOCATION}/generic.sh
 
 	echo "Customizing the Gentoo disk image..."
 
 	# Definir o hostname
 
 	echo "hostname=\"$NAME\"" > $HOSTNAME_FILE
-	
+
 	# Configurar a rede
 
 	echo -e "dns_servers=\"$DNS_SERVERS\"" > $NETWORKING_FILE
@@ -39,9 +39,9 @@ function customize_disk {
 	fi
 
 	# Randomizar as horas dos cronjobs
-	
+
 	TMP_FILE=$(mktemp)
-	
+
 	cp $CRONTAB_FILE $TMP_FILE
 
 	cat $TMP_FILE | awk '

@@ -2,19 +2,26 @@
 # Script para criar VMs baseadas no template de Gentoo hardened x86_64
 # André Aparício (2013)
 
+# bash "strict mode"
+#set -euo pipefail
+#IFS=$'\n\t'
+# allows patterns which match no files to expand to a null string, rather than themselves
+shopt -s nullglob
+
 ### DEFAULTS ###
 
 MAX_NUM_CPU=8
 DEFAULT_RAM_SIZE="256MiB"
 DEFAULT_NUM_CPU=1
-DEFAULT_DISK_SIZE="5"
+DEFAULT_DISK_SIZE="5" # GB
 
 ### Hardcoded stuff ###
 
 DISK_LOCATION="/var/lib/libvirt/images"
-LIB_LOCATION="/root/vm-scripts/lib"
+LIB_LOCATION="/usr/libexec/vm-scripts/lib"
+LIB_SCRIPTS="lib/*.sh /usr/local/libexec/vm-scripts/lib/*.sh /usr/libexec/vm-scripts/lib/*.sh"
+TEMPLATES_LOCATION="/usr/libexec/vm-scripts/templates"
 TEMPLATE_VM="neo"
-TEMPLATE_MOUNTPOINT="/mnt/template"
 NEWVM_MOUNTPOINT="/mnt/newvm"
 
 ### Parse argumetns ###
@@ -36,7 +43,7 @@ done
 
 ### Include other files ###
 
-for file in ${LIB_LOCATION}/*.sh; do
+for file in ${LIB_SCRIPTS}; do
 	source $file
 done
 
