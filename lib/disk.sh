@@ -14,12 +14,15 @@ function get_disk_type() {
 			disk_type=file
 			local disk_name=$NAME
 			disk_location=${DISK_LOCATION}/${disk_name}.img
+			disk_write=all
 
 			if [ -a "$disk_location" ]; then
-				warning "A disk file with the name $DISK_NAME.img already exists!"
+				warning "A disk file with the name $disk_name.img already exists!"
 				echo "What do you want to do?"
 				echo "  1 - Choose a different name."
-				echo "  2 - Use the existing disk"
+				echo "  2 - Use the existing disk without touching it"
+				echo "  3 - Use the existing disk and customize it"
+				echo "  4 - Overwrite the existing disk"
 				echo "  0 - Flip the table."
 
 				prompt "?" OPTION
@@ -31,14 +34,20 @@ function get_disk_type() {
 						done
 						;;
 					2)
-						disk_write=false
+						disk_write=none
+						;;
+					3)
+						disk_write=customize
+						;;
+					4)
+						disk_write=format
 						;;
 					0)
 						echo "Bye bye..."
 						exit
 						;;
 					*)
-						disk_write=false
+						disk_write=none
 						;;
 				esac
 			fi
@@ -122,6 +131,8 @@ function get_disk_fs_action() {
 			;;
 		4) # Empty
 			fs_action=none
+			fs_template=none
+			fs_template_os=none
 			;;
 		0)
 			echo "Bye bye..."
@@ -202,6 +213,11 @@ function format_disk() {
 	mkfs.ext4 -F -E nodiscard -L "${name}_root" $path 2>&1 | quote_output
 }
 
+function is_mounted() {
+	local mountpoint=$1
+	mount | grep $mountpoint >/dev/null
+}
+
 function mount_disk() {
 	local file=$1
 	local mountpoint=$2
@@ -212,6 +228,7 @@ function mount_disk() {
 
 function umount_disk() {
 	local mountpoint=$1
+	echo "Unmounting $mountpoint"
 	umount $mountpoint
 	rmdir $mountpoint
 }
@@ -226,44 +243,62 @@ function extract_template () {
 
 function check_storage_config() {
 
-	info "Storage configuration to be executed:"
+	echo "Storage configuration to be executed:"
 
 	if [[ $ROOT_DISK_TYPE == "none" ]]; then
 		info "No storage configured" 
 		return
 	fi
 
-	case $ROOT_DISK_TYPE in
-		file)
-			info "Create disk on file $ROOT_DISK_LOCATION with $ROOT_DISK_SIZE GB"
-			;;
-		lvm)
-			info "Create disk on LVM logical volume $ROOT_DISK_LOCATION with $ROOT_DISK_SIZE GB"
-			;;
-		*)
-			info "Shit happened at line $LINENO in disk.sh"
-			;;
-	esac
+	case $ROOT_DISK_WRITE in
 
-	if [ $ROOT_DISK_WRITE ]; then
-		case $ROOT_DISK_FS_ACTION in
-			template)
-				info "Extract $ROOT_DISK_FS_TEMPLATE_OS tarball from $ROOT_DISK_FS_TEMPLATE"
+		all)
+			case $ROOT_DISK_TYPE in
+				file)
+					info "Create disk on file $ROOT_DISK_LOCATION with $ROOT_DISK_SIZE GB"
+					;;
+				lvm)
+					info "Create disk on LVM logical volume $ROOT_DISK_LOCATION with $ROOT_DISK_SIZE GB"
+					;;
+				*)
+					info "Shit happened at line $LINENO in disk.sh"
+					;;
+			esac
+			;&
+
+		format)
+			info "Format $ROOT_DISK_LOCATION with ext4"
+			;&
+
+		populate)
+
+			case $ROOT_DISK_FS_ACTION in
+				template)
+					info "Extract $ROOT_DISK_FS_TEMPLATE_OS tarball from $ROOT_DISK_FS_TEMPLATE"
+					;;
+				tarball)
+					info "Extract tarball from $ROOT_DISK_FS_TEMPLATE"
+					;;
+				copy_vm)
+					info "Copy filesystem from VM $ROOT_DISK_FS_TEMPLATE"
+					;;
+				none)
+					info "Leave filesystem empty"
+					;;
+			esac
+			;&
+
+		customize)
+			if [[ $ROOT_DISK_FS_TEMPLATE_OS != 'none' ]]; then
 				info "Execute $ROOT_DISK_FS_TEMPLATE_OS costumization script $ROOT_DISK_FS_TEMPLATE_SCRIPT"
-				;;
-			tarball)
-				info "Extract tarball from $ROOT_DISK_FS_TEMPLATE"
-				;;
-			copy_vm)
-				info "Copy filesystem from VM $ROOT_DISK_FS_TEMPLATE"
-				;;
-			none)
-				info "Format filesystem and leave empty"
-				;;
-		esac
-	else
-		info "Not formating existing disk"
-	fi
+			else
+				info "Try to guess existing disk OS to execute customization scripts"
+			fi
+			;;
+
+		none)
+			info "  Do not touch existing disk"
+	esac
 }
 
 function ask_storage_settings {
@@ -272,10 +307,24 @@ function ask_storage_settings {
 
 		get_disk_type ROOT_DISK_TYPE ROOT_DISK_LOCATION ROOT_DISK_WRITE
 
-		if [[ $ROOT_DISK_TYPE != "none" ]]; then
-			prompt "Size of the root disk image in GB (the base system requires at least 1Gb)?" ROOT_DISK_SIZE $DEFAULT_DISK_SIZE
-			get_disk_fs_action ROOT_DISK_FS_ACTION ROOT_DISK_FS_TEMPLATE ROOT_DISK_FS_TEMPLATE_OS ROOT_DISK_FS_TEMPLATE_SCRIPT
-		fi
+		ROOT_DISK_FS_ACTION=none
+		ROOT_DISK_FS_TEMPLATE=none
+		ROOT_DISK_FS_TEMPLATE_OS=none
+		ROOT_DISK_FS_TEMPLATE_SCRIPT=none
+
+		case $ROOT_DISK_WRITE in
+			all)
+				prompt "Size of the root disk image in GB (the base system requires at least 1Gb)?" ROOT_DISK_SIZE $DEFAULT_DISK_SIZE
+				;&
+			format)
+				;&
+			populate)
+				get_disk_fs_action ROOT_DISK_FS_ACTION ROOT_DISK_FS_TEMPLATE ROOT_DISK_FS_TEMPLATE_OS ROOT_DISK_FS_TEMPLATE_SCRIPT
+				;&
+			customize)
+				;;
+			none)
+		esac
 
 		check_storage_config
 

@@ -28,7 +28,7 @@ function warning() {
 }
 
 function info() {
-	echo -e $CYAN"$1"$NORMAL
+	echo -e $CYAN"  $1"$NORMAL
 }
 
 function set_name() {
@@ -43,4 +43,19 @@ function quote_output() {
 	while read line; do
 		echo -e " $GRAY$line$NORMAL"
 	done
+}
+
+function run() {
+	if [ ! $DRYRUN ]; then
+		$@
+	fi
+}
+
+function run_silent() {
+	if [ $DEBUG ]; then
+		echo "Running \"$@\""
+		run $@ | quote_output
+	else
+		run $@ >/dev/null
+	fi
 }

@@ -3,7 +3,7 @@ function virsh_name_exist() {
 }
 
 function virsh_cmd() {
-	virsh $@ --config >/dev/null
+	run_silent virsh $@ --config
 }
 
 function virsh_define_vm() {
@@ -21,7 +21,7 @@ function virsh_define_vm() {
 	sed -i "s#^  <name>.*</name>#  <name>$name</name>#" $xml_file
 	sed -i "/^  <uuid>/d" $xml_file
 
-	virsh define $xml_file >/dev/null
+	run_silent virsh define $xml_file
 
 	rm -f $xml_file
 
@@ -61,6 +61,7 @@ EOF
 			rm -f $tmp_file
 			;;
 		lvm)
+			# TODO
 			;;
 		none)
 			;;
