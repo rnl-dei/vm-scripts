@@ -35,7 +35,12 @@ function set_name() {
 	unset NAME
 	while [[ $NAME == "" ]]; do
 		prompt "Name (it is best to match exactly the DNS domain)?" NEWNAME
-		virsh_name_exist $NEWNAME && warning "A VM with that name already exist!" || NAME=$NEWNAME
+		if virsh_name_exist $NEWNAME; then
+			 warning "A VM with that name already exist!"
+			 echo "Hit Ctrl+C and run 'virsh undefine $NEWNAME' if you really want to delete the existing VM '$NEWNAME'."
+		else
+			NAME=$NEWNAME
+		fi
 	done
 }
 

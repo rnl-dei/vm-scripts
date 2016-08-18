@@ -76,8 +76,6 @@ if [[ $ROOT_DISK_TYPE == "none" ]]; then
 	exit
 fi
 
-exit
-
 ### Create the new root disk image ###
 
 case $ROOT_DISK_WRITE in # case switch with intentional fall throughs
