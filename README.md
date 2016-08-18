@@ -11,14 +11,10 @@ Interactive script to create new ready to use VMs with support for:
 
 Create a tar.bz2 with the base image to create new VMs, either from a local directory or a remote host.
 
-## check_resources.sh
+## check-resources.sh
 
 Show a resumed list of the VMs configured, with state, autostart, CPUs, memory and disk space used.
 
-## ksm_status.sh
+## ksm-status.sh
 
 Show the current usage of the kernel same-page merging.
-
-## create-gentoo-vm.sh
-
-Old VM creation script to create a new VM based on options given and the ``neo`` image.
