@@ -15,7 +15,8 @@ function virsh_define_vm() {
 
 	local xml_file=$(mktemp)
 
-	virsh dumpxml $TEMPLATE_VM >  $xml_file
+	#virsh dumpxml $TEMPLATE_VM >  $xml_file
+	cp $XML_TEMPLATE $xml_file
 
 	sed -i "s#^  <name>.*</name>#  <name>$name</name>#" $xml_file
 	sed -i "/^  <uuid>/d" $xml_file

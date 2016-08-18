@@ -1,8 +1,6 @@
 # Gentoo specific template
 
-STAGE4_FILE=/root/vm-scripts/neo-stage4.tar.bz2
-
-CLEAN_VM=neo
+STAGE4_FILE=/usr/rnl-overlay/stage4/stage4-gentoo.tar.bz2
 
 HOSTNAME_FILE="$NEWVM_MOUNTPOINT/etc/conf.d/hostname"
 NETWORKING_FILE="$NEWVM_MOUNTPOINT/etc/conf.d/net"
