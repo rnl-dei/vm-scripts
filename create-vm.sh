@@ -17,6 +17,25 @@ TEMPLATE_VM="neo"
 TEMPLATE_MOUNTPOINT="/mnt/template"
 NEWVM_MOUNTPOINT="/mnt/newvm"
 
+### Parse argumetns ###
+
+for arg in $@; do
+	case $arg in
+		debug)
+			DEBUG=1
+			;;
+		dry-run)
+			DRYRUN=1
+			;;
+		*)
+			echo "Usage: $0 [debug] [dry-run]"
+			exit
+			;;
+	esac
+done
+
+### Include other files ###
+
 for file in ${LIB_LOCATION}/*.sh; do
 	source $file
 done
@@ -38,6 +57,9 @@ prompt "Amount of RAM to use?" RAM_SIZE $DEFAULT_RAM_SIZE
 prompt "Number of CPUs?" NUM_CPU $DEFAULT_NUM_CPU
 
 prompt "\nExecute?" COSTUMIZE Y
+
+[[ $COSTUMIZE = [yY] ]] || exit
+
 echo -e "Executing...\n"
 
 virsh_define_vm $NAME $ROOT_DISK_TYPE $ROOT_DISK_LOCATION
@@ -47,45 +69,63 @@ if [[ $ROOT_DISK_TYPE == "none" ]]; then
 	exit
 fi
 
+exit
+
 ### Create the new root disk image ###
 
-case $ROOT_DISK_TYPE in
-	file)
-		create_disk_file $ROOT_DISK_LOCATION $ROOT_DISK_SIZE
-		;;
-	lvm)
-		create_disk_lvm $NAME $ROOT_DISK_SIZE
-		;;
+case $ROOT_DISK_WRITE in # case switch with intentional fall throughs
+
+	all)
+		case $ROOT_DISK_TYPE in
+			file)
+				create_disk_file $ROOT_DISK_LOCATION $ROOT_DISK_SIZE
+				;;
+			lvm)
+				create_disk_lvm $NAME $ROOT_DISK_SIZE
+				;;
+		esac
+		;& # fall through
+
+	format)
+		format_disk $ROOT_DISK_LOCATION $NAME
+		;& # fall through
+
+	populate)
+		mount_disk $ROOT_DISK_LOCATION $NEWVM_MOUNTPOINT
+
+		case $ROOT_DISK_FS_ACTION in
+			template)
+				extract_template $ROOT_DISK_FS_TEMPLATE $NEWVM_MOUNTPOINT
+				;;
+			tarball)
+				extract_template $ROOT_DISK_FS_TEMPLATE $NEWVM_MOUNTPOINT
+				;;
+			copy_vm)
+				echo "Copying VM"
+				;;
+			none)
+				echo "Leaving filesystem empty"
+				;;
+		esac
+		;& # fall through
+
+	customize)
+		if ! is_mounted $NEWVM_MOUNTPOINT; then
+			mount_disk $ROOT_DISK_LOCATION $NEWVM_MOUNTPOINT
+		fi
+
+		if [[ $ROOT_DISK_FS_TEMPLATE_OS != 'none' ]]; then
+			customize_disk
+		else
+			guess_script_template $NEWVM_MOUNTPOINT
+		fi
+
+		umount_disk $NEWVM_MOUNTPOINT
+		;;  # do not fall through
+
+	none)
+		echo "Not touching existing disk"
 esac
 
-if [ $ROOT_DISK_WRITE ]; then
-
-	format_disk $ROOT_DISK_LOCATION $NAME
-
-	mount_disk $ROOT_DISK_LOCATION $NEWVM_MOUNTPOINT
-
-	case $ROOT_DISK_FS_ACTION in
-		template)
-			extract_template $ROOT_DISK_FS_TEMPLATE $NEWVM_MOUNTPOINT
-			customize_disk
-			;;
-		tarball)
-			extract_template $ROOT_DISK_FS_TEMPLATE $NEWVM_MOUNTPOINT
-			guess_script_template $NEWVM_MOUNTPOINT
-			;;
-		copy_vm)
-			echo "Copying VM"
-			guess_script_template $NEWVM_MOUNTPOINT
-			;;
-		none)
-			echo "Formating filesystem and leaving it empty"
-			;;
-	esac
-
-	echo umount_disk $NEWVM_MOUNTPOINT
-else
-	echo "Not formating existing disk"
-fi
-
 echo "Profit!"
-echo "Run \"virsh start $NAME\" to start the VM."
+echo "Run \"virsh start $NAME\" to start the VM. Or don't, whatever."
