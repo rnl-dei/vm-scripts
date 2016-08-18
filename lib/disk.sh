@@ -140,10 +140,10 @@ function get_disk_fs_action() {
 			;;
 	esac
 
-	eval $fs_action_var=$fs_action
-	eval $fs_template_var=$fs_template
-	eval $fs_template_os_var=$fs_template_os
-	eval $fs_template_script_var=$fs_template_script
+	eval "${fs_action_var}=${fs_action}"
+	eval "${fs_template_var}=${fs_template}"
+	eval "${fs_template_os_var}=${fs_template_os}"
+	eval "${fs_template_script_var}=${fs_template_script}"
 }
 
 function get_os_template() {
