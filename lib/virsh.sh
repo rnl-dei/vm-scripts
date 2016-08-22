@@ -61,7 +61,8 @@ EOF
 			rm -f $tmp_file
 			;;
 		lvm)
-			# TODO
+			warning TODO
+			exit
 			;;
 		none)
 			;;

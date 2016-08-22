@@ -20,7 +20,7 @@ function get_disk_type() {
 				local size=$(file_human_size $disk_location)
 				warning "A disk file with the name $disk_name.img already exists! ($size)"
 				echo "What do you want to do?"
-				echo "  1 - Choose a different name."
+				echo "  1 - Choose a different name for the VM."
 				echo "  2 - Use the existing disk without touching it (WARNING: The MAC address on /etc/udev/rules.d/ will need an update)"
 				echo "  3 - Use the existing disk and customize it"
 				echo "  4 - Overwrite the existing disk (keeps the same size)"
