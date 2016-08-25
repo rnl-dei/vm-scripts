@@ -12,6 +12,7 @@ shopt -s nullglob
 
 MAX_NUM_CPU=8
 DEFAULT_RAM_SIZE="256MiB"
+DEFAULT_SWAP_SIZE="0MiB"
 DEFAULT_NUM_CPU=1
 DEFAULT_DISK_SIZE="5" # GB
 
@@ -59,9 +60,9 @@ ask_network_settings
 
 ask_storage_settings
 
-prompt "Amount of RAM to use?" RAM_SIZE $DEFAULT_RAM_SIZE
+ask_memory
 
-prompt "Number of CPUs?" NUM_CPU $DEFAULT_NUM_CPU
+ask_cpu
 
 prompt "\nExecute?" COSTUMIZE Y
 
