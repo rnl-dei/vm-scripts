@@ -9,8 +9,6 @@ echo "SUBSYSTEM==\"net\", ACTION==\"add\", ATTR{address}==\"$MAC_ADDRESS\", NAME
 # Copiar as chaves de SSH do zion
 cp /root/.ssh/authorized_keys ${NEWVM_MOUNTPOINT}/root/.ssh/
 
-SWAP_SIZE=$1
-
 # Criar swap file se definido
 if [[ ! $SWAP_SIZE =~ ^0 ]]; then
 
@@ -34,8 +32,10 @@ if [[ ! $SWAP_SIZE =~ ^0 ]]; then
 			count=$((count * 1000))
 			;;
 		*)
-			warning "Swap size must have one of the following units: MiB, GiB, MB or GB."
-			exit
+			warning "Swap size must have one of the following units: MiB, GiB, MB or GB. Going with 256MiB of swap."
+			block_size=1MiB
+			count=256
+
 	esac
 
 	dd if=/dev/zero of=${NEWVM_MOUNTPOINT}/swapfile bs=${block_size} count=${count}
