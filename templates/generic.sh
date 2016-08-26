@@ -39,6 +39,7 @@ if [[ ! $SWAP_SIZE =~ ^0 ]]; then
 	esac
 
 	dd if=/dev/zero of=${NEWVM_MOUNTPOINT}/swapfile bs=${block_size} count=${count}
+	mkswap ${NEWVM_MOUNTPOINT}/swapfile
 
 # Ou comentar no fstab (caso o template tenha swap configurada)
 else
