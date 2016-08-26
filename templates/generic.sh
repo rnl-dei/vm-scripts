@@ -7,6 +7,7 @@ MAC_ADDRESS=$(virsh_get_mac_address $NAME)
 echo "SUBSYSTEM==\"net\", ACTION==\"add\", ATTR{address}==\"$MAC_ADDRESS\", NAME=\"lan0\"" > $UDEV_INTERFACE_FILE
 
 # Copiar as chaves de SSH do zion
+echo "Copying SSH keys..."
 cp /root/.ssh/authorized_keys ${NEWVM_MOUNTPOINT}/root/.ssh/
 
 # Criar swap file se definido
@@ -38,8 +39,9 @@ if [[ ! $SWAP_SIZE =~ ^0 ]]; then
 
 	esac
 
-	dd if=/dev/zero of=${NEWVM_MOUNTPOINT}/swapfile bs=${block_size} count=${count}
-	mkswap ${NEWVM_MOUNTPOINT}/swapfile
+	echo "Create swap file..."
+	dd if=/dev/zero of=${NEWVM_MOUNTPOINT}/swapfile bs=${block_size} count=${count} | quote_output
+	mkswap ${NEWVM_MOUNTPOINT}/swapfile | quote_output
 
 # Ou comentar no fstab (caso o template tenha swap configurada)
 else
