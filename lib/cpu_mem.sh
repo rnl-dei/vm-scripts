@@ -4,7 +4,7 @@ function ask_cpu() {
 }
 
 function ask_memory() {
-	prompt "Amount of RAM to use? (MB = 1000 KBs, MiB = 1024 KiB)" RAM_SIZE $DEFAULT_RAM_SIZE
+	prompt "Amount of RAM to use? (MB = 1000 KB, MiB = 1024 KiB)" RAM_SIZE $DEFAULT_RAM_SIZE
 
 	# Strip trailing b/B
 	RAM_BYTES=$RAM_SIZE
