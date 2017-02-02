@@ -5,7 +5,7 @@ GRAY="\e[0;90m"
 NORMAL="\e[0m"
 
 function prompt() {
-	local message=$1 var=$2 default=$3 option=""
+	local message=$1 var=$2 default="$3" option=""
 
 	if [[ $default = [yY] ]]; then
 		option="[Y/n] "
@@ -19,8 +19,8 @@ function prompt() {
 
 	local tmp
 	read tmp
-	[[ $tmp == "" ]] && tmp=$default
-	eval $var=$tmp
+	[[ $tmp == "" ]] && tmp="$default"
+	eval $var=\"$tmp\"
 }
 
 function warning() {

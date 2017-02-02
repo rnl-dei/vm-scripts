@@ -56,6 +56,11 @@ echo
 
 set_name
 
+prompt "What is YOUR name?" PERSON_NAME $RNLADMIN
+
+prompt "What is the VM for (e.g. description)?" DESCRIPTION "$PERSON_NAME is dumb"
+DESCRIPTION="$DESCRIPTION (created by $PERSON_NAME on $(date +%F))"
+
 ask_network_settings
 
 ask_storage_settings
@@ -70,7 +75,7 @@ prompt "\nExecute?" COSTUMIZE Y
 
 echo -e "Executing...\n"
 
-virsh_define_vm $NAME $ROOT_DISK_TYPE $ROOT_DISK_LOCATION
+virsh_define_vm $NAME $ROOT_DISK_TYPE $ROOT_DISK_LOCATION "$DESCRIPTION"
 
 if [[ $ROOT_DISK_TYPE == "none" ]]; then
 	echo "VM configured without storage, good luck with that now..."
