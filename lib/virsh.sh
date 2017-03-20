@@ -7,7 +7,7 @@ function virsh_cmd() {
 }
 
 function virsh_define_vm() {
-	local name=$1 root_disk_type=$2 root_disk_location=$3
+	local name=$1 root_disk_type=$2 root_disk_location=$3 description="$4"
 
 	echo "Configuring VM in libvirt..."
 
@@ -27,7 +27,8 @@ function virsh_define_vm() {
 
 	### Change the necessary parts of the VM config ###
 
-	virsh_cmd desc $name "who knowns..."
+	virsh_cmd desc $name --new-desc "$description" \
+	|| warning "make sure description does not have words starting with '--'"
 
 	virsh_cmd setmaxmem $name $RAM_SIZE
 	virsh_cmd setmem $name $RAM_SIZE
@@ -39,8 +40,6 @@ function virsh_define_vm() {
 	virsh_cmd attach-interface $name bridge $INTERFACE --target tap-$name --model virtio
 
 	virsh_cmd detach-disk $name vda
-
-	virsh_cmd desc $name ""
 
 	local tmp_file=$(mktemp)
 
