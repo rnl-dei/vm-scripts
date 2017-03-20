@@ -26,7 +26,7 @@ for file in ${LIB_SCRIPTS}; do
 done
 
 function tar_cmd {
-	echo "tar cjf - --totals=USR1 -C $1 . --one-file-system --exclude-backups --exclude-from=-"
+	echo "tar cjf - --totals=USR1 --one-file-system --exclude-backups --exclude-from=- -C $1 ."
 }
 
 function progress_signal {
