@@ -101,7 +101,7 @@ function process_vm() {
 		echo "Waiting for the VM to shutdown (60 seconds max)..."
 
 		local count=0
-		while virsh_vm_is_running $name && [[ $count < 60 ]]; do
+		while virsh_vm_is_running $name && [[ $count -lt 60 ]]; do
 			sleep 1
 			count=$((count + 1))
 		done
