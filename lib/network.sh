@@ -4,13 +4,14 @@ DNS_SERVERS="193.136.164.1 193.136.164.2"
 INTERFACES=(pub priv dmz labs gia portateis)
 
 declare -A NETWORK_INTERFACE=(
-	[pub]=pub
+	[self.logpub]=pub
 	[priv]=priv
 	[dmz]=dmz
 	[labs]=labs
 	[labs2]=labs
 	[cluster]=labs
 	[gia-priv]=gia
+	[gia-pub]=gia
 	[portateis]=portateis
 )
 
@@ -22,12 +23,13 @@ declare -A NETMASKS=(
 	[labs2]=26
 	[cluster]=24
 	[gia-priv]=24
+	[gia-pub]=27
 	[portateis]=23
 )
 
 declare -A IPRANGES_THIRD=(
 	["193.136.164"]="pub priv dmz"
-	["193.136.154"]="labs labs2"
+	["193.136.154"]="labs labs2 gia-pub"
 	["192.168.77"]="cluster"
 	["10.16.80"]="portateis"
 	["10.16.81"]="portateis"
@@ -42,6 +44,7 @@ declare -A IPRANGES_FOURTH=(
 	[labs2]="129 190"
 	[cluster]="1 254"
 	[gia-priv]="1 254"
+	[gia-pub]="193 222"
 	[portateis]="1 254"
 )
 
