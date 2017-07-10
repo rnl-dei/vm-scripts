@@ -4,7 +4,7 @@ DNS_SERVERS="193.136.164.1 193.136.164.2"
 INTERFACES=(pub priv dmz labs gia portateis)
 
 declare -A NETWORK_INTERFACE=(
-	[self.logpub]=pub
+	[pub]=pub
 	[priv]=priv
 	[dmz]=dmz
 	[labs]=labs
