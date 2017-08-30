@@ -12,52 +12,7 @@ function get_disk_type() {
 	case $OPTION in
 		1)
 			disk_type=file
-			local disk_name=$NAME
-			disk_location=${DISK_LOCATION}/${disk_name}.img
-			disk_write=all
-
-			if [ -a "$disk_location" ]; then
-				local size=$(file_human_size $disk_location)
-				warning "A disk file with the name $disk_name.img already exists! ($size)"
-				echo "What do you want to do?"
-				echo "  1 - Choose a different name for the VM."
-				echo "  2 - Use the existing disk without touching it (WARNING: The MAC address on /etc/udev/rules.d/ will need an update)"
-				echo "  3 - Use the existing disk and customize it"
-				echo "  4 - Overwrite the existing disk (keeps the same size)"
-				echo "  5 - Remove and create a new disk"
-				echo "  0 - Flip the table."
-
-				prompt "?" OPTION
-				case $OPTION in
-					1)
-						while [ -a "$disk_location" ]; do
-							prompt "Type the new disk name: " disk_name
-							disk_location=$DISK_LOCATION/$DISK_NAME.img
-						done
-						;;
-					2)
-						disk_write=none
-						;;
-					3)
-						disk_write=customize
-						;;
-					4)
-						disk_write=format
-						;;
-					5)
-						disk_write=all
-						warning "NOT TESTED BYE"
-						exit
-						;;
-					0)
-						echo "Bye bye..."
-						exit
-						;;
-					*)
-						disk_write=none
-						;;
-				esac
-			fi
+			disk_location=${DISK_LOCATION}/${NAME}.img
 			;;
 		2)
 			disk_type=lvm
@@ -72,6 +27,54 @@ function get_disk_type() {
 			exit
 			;;
 	esac
+
+	if [[ $disk_location != "none" ]]; then
+		local disk_name=$NAME
+		disk_write=all
+
+		if [ -a "$disk_location" ]; then
+			local size=$(file_human_size $disk_location)
+			warning "A disk file with the name $disk_name.img already exists! ($size)"
+			echo "What do you want to do?"
+			echo "  1 - Choose a different name for the VM."
+			echo "  2 - Use the existing disk without touching it (WARNING: The MAC address on /etc/udev/rules.d/ will need an update)"
+			echo "  3 - Use the existing disk and customize it"
+			echo "  4 - Overwrite the existing disk (keeps the same size)"
+			echo "  5 - Remove and create a new disk"
+			echo "  0 - Flip the table."
+
+			prompt "?" OPTION
+			case $OPTION in
+				1)
+					while [ -a "$disk_location" ]; do
+						prompt "Type the new disk name: " disk_name
+						disk_location=$DISK_LOCATION/$DISK_NAME.img
+					done
+					;;
+				2)
+					disk_write=none
+					;;
+				3)
+					disk_write=customize
+					;;
+				4)
+					disk_write=format
+					;;
+				5)
+					disk_write=all
+					warning "NOT TESTED BYE"
+					exit
+					;;
+				0)
+					echo "Bye bye..."
+					exit
+					;;
+				*)
+					disk_write=none
+					;;
+			esac
+		fi
+	fi
 
 	eval $disk_type_var=$disk_type
 	eval $disk_location_var=$disk_location
