@@ -60,8 +60,19 @@ EOF
 			rm -f $tmp_file
 			;;
 		lvm)
-			warning TODO
-			exit
+
+cat << EOF > $tmp_file
+    <disk type='block' device='disk'>
+      <driver name='qemu' type='raw' cache='none' io='native'/>
+      <source dev='$root_disk_location'/>
+      <target dev='vda' bus='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
+    </disk>
+EOF
+
+			virsh_cmd attach-device $name $tmp_file
+
+			rm -f $tmp_file
 			;;
 		none)
 			;;

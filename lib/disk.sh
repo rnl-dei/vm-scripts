@@ -208,14 +208,12 @@ function create_disk_lvm() {
 	echo "Creating the LVM partition"
 	local name=$1
 	local size=$2
-	warning TODO
-	exit
+	lvcreate -L ${size}G -n "$name" vg0 | quote_output
 }
 
 function format_disk() {
 	local path=$1
 	local name=$2
-	#mkfs.ext4 -F -E lazy_itable_init=0 -E nodiscard -L "${NAME}_root" $DISK_FILE 2>&1 | quote_output
 	echo "Formating $path to ext4..."
 	mkfs.ext4 -F -E nodiscard -L "${name}_root" $path 2>&1 | quote_output
 }
