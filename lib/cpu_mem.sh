@@ -4,7 +4,15 @@ function ask_cpu() {
 }
 
 function ask_memory() {
-	prompt "Amount of RAM to use? (MB = 1000 KB, MiB = 1024 KiB)" RAM_SIZE $DEFAULT_RAM_SIZE
+        while :; do
+                prompt "Amount of RAM to use? (MB = 1000 KB, MiB = 1024 KiB)" RAM_SIZE $DEFAULT_RAM_SIZE
+
+                if [[ "$RAM_SIZE" =~ [MmGg]i?[bB] ]]; then
+                        break
+                else
+                        warning "You must specify one of the following units: MiB, GiB, MB or GB."
+                fi
+        done
 
 	# Strip trailing b/B
 	RAM_BYTES=$RAM_SIZE
