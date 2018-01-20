@@ -18,7 +18,7 @@ BEGIN {
 		name = $1
 
 		if(name) {
-			while ("virsh dominfo "name | getline)
+			while ("virsh dominfo '"name"'" | getline)
 
 				if ($1 == "State:")
 					state[name] = $2$3
@@ -32,10 +32,10 @@ BEGIN {
 				else if ($1 == "Autostart:")
 					autostart[name] = $2
 
-			while ("virsh domblklist --details "name | getline)
+			while ("virsh domblklist --details '"name"'" | getline)
 				if($2 == "disk") {
 					disk = $4
-					while ("virsh domblkinfo "name" "disk | getline) {
+					while ("virsh domblkinfo '"name"' '"disk"'" | getline) {
 						if($1 == "Capacity:")
 							used_disk[name] += $2/1024/1024/1000
 					}
