@@ -1,7 +1,7 @@
 #!/usr/bin/awk -f
 
 function sep() {
-	printf("-----------------------------------------------------------------------------------------------------\n")
+	printf("----------------------------------------------------------------------------------------------------------------------\n")
 }
 
 function vmwarn(name, msg) {
@@ -28,13 +28,13 @@ BEGIN {
 		if ($1 == "MemTotal:")
 			TOTAL_MEM = int($2 / 1024)
 	}
-	print("  "TOTAL_MEM " GiB RAM")
+	print("  "TOTAL_MEM " MiB RAM")
 
 	while ("virsh list --name --all" | getline) {
 		name = $1
 
 		if(name) {
-			while ("virsh dominfo '"name"'" | getline)
+			while ("virsh dominfo '"name"'" | getline) {
 
 				if ($1 == "State:")
 					state[name] = $2$3
@@ -47,17 +47,35 @@ BEGIN {
 
 				else if ($1 == "Autostart:")
 					autostart[name] = $2
+			}
 
-			while ("virsh domblklist --details '"name"'" | getline)
+			while ("virsh dumpxml '"name"'" | getline) {
+				if (/description/) {
+					sub(" *<description>", "")
+					sub("</description>", "")
+					desc[name] = $0
+					break
+				}
+			}
+
+			while ("virsh domblklist --details '"name"'" | getline) {
 				if($2 == "disk") {
 					type = $1
 					disk = $4
 					size = 0
 
 					while ("virsh domblkinfo '"name"' '"disk"' 2>/dev/null" | getline) {
-						if($1 == "Physical:")
+						if($1 == "Capacity:") {
 							size = $2
+
+							if (disk in disk_in_use_by) {
+								vmwarn(name, "Disk '"disk"' already in use by the VM '"disk_in_use_by[disk]"'")
+								continue
+							}
+							disk_in_use_by[disk] = name
+
 							used_disk[name] += size / 1024 / 1024 / 1000
+						}
 					}
 
 					if (size == 0) {
@@ -67,7 +85,9 @@ BEGIN {
 
 					switch(type) {
 						case "file":
-							while ("df --output=target '"disk"'" | getline);
+							cmd = "df --output=target '"disk"'"
+							while (cmd | getline);
+							close(cmd)
 							mountpoint = $1
 
 							switch (mountpoint) {
@@ -86,18 +106,21 @@ BEGIN {
 							break
 
 						case "block":
-							while ("lvdisplay '"disk"'" | getline) {
+							cmd = "lvdisplay '"disk"'"
+							while (cmd | getline) {
 								if (/VG Name/)
 									volume = $NF
 							}
+							close(cmd)
 							used_lvm[volume] += size
 							break
 					}
 				}
+			}
 		}
 	}
 
-	printf(" %-20s %-15s %-13s %2s %24s %21s\n", "Name", "State", "Autostart", "#CPU", "Memory", "Disk")
+	printf(" %-20s %-15s %-13s %2s %24s %21s   %s\n", "Name", "State", "Autostart", "#CPU", "Memory", "Disk", "Description")
 	sep()
 	n = -1
 	for(name in state) {
@@ -106,7 +129,6 @@ BEGIN {
 			sep()
 			n = 0
 		}
-
 
 		if (state[name] == "running") {
 			color1 = GREEN
@@ -123,11 +145,18 @@ BEGIN {
 
 		if (autostart[name] == "enable")
 			color2 = GREEN
+		else if (state[name] == "running")
+			color2 = RED
 		else
 			color2 = GRAY
 
-		printf(" %-20s %s%-15s%s %s%-15s%s %2d %20d MiB %18d GB\n", \
-		name, color1, state[name], NORMAL, color2, autostart[name], NORMAL, cpu[name], mem[name], used_disk[name])
+		if (desc[name] == "")
+			desc[name] = RED "EMPTY" NORMAL
+		else if (desc[name] == "who knowns...") # The typo is for real :D
+			desc[name] = RED desc[name] NORMAL
+
+		printf(" %-20s %s%-15s%s %s%-15s%s %2d %20d MiB %18d GB   %s\n", \
+		name, color1, state[name], NORMAL, color2, autostart[name], NORMAL, cpu[name], mem[name], used_disk[name], GRAY desc[name] NORMAL)
 
 	}
 
