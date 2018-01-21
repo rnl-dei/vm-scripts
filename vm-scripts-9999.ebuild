@@ -33,9 +33,12 @@ src_install() {
 	newbin vm-list.awk vm-list
 	newbin vm-ksm.sh vm-ksm
 
-	exeinto /usr/libexec/vm-scripts/lib
+	exeinto /usr/libexec/${PN}/lib
 	doexe lib/*.sh
 
-	exeinto /usr/libexec/vm-scripts/templates
+	exeinto /usr/libexec/${PN}/templates
 	doexe templates/*.sh
+
+	into /usr/share/${PN}/templates
+	dolib templates/neo.xml
 }

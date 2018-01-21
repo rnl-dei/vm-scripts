@@ -22,7 +22,7 @@ DISK_LOCATION="/var/lib/libvirt/images"
 LIB_LOCATION="/usr/libexec/vm-scripts/lib"
 LIB_SCRIPTS="lib/*.sh /usr/local/libexec/vm-scripts/lib/*.sh /usr/libexec/vm-scripts/lib/*.sh"
 TEMPLATES_LOCATION="/usr/libexec/vm-scripts/templates"
-XML_TEMPLATE="/usr/rnl-overlay/stage4/neo.xml"
+XML_TEMPLATE="/usr/share/vm-scripts/templates/neo.xml"
 NEWVM_MOUNTPOINT="/mnt/newvm"
 
 ### Parse argumetns ###
