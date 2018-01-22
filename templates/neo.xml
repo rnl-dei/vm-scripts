@@ -24,28 +24,27 @@
     <model fallback='forbid'>SandyBridge</model>
     <vendor>Intel</vendor>
     <feature policy='require' name='vme'/>
-    <feature policy='disable' name='ds'/>
-    <feature policy='disable' name='acpi'/>
+    <feature policy='require' name='ds'/>
+    <feature policy='require' name='acpi'/>
     <feature policy='require' name='ss'/>
-    <feature policy='disable' name='ht'/>
-    <feature policy='disable' name='tm'/>
-    <feature policy='disable' name='pbe'/>
-    <feature policy='disable' name='dtes64'/>
-    <feature policy='disable' name='monitor'/>
-    <feature policy='disable' name='ds_cpl'/>
-    <feature policy='disable' name='vmx'/>
-    <feature policy='disable' name='smx'/>
-    <feature policy='disable' name='est'/>
-    <feature policy='disable' name='tm2'/>
-    <feature policy='disable' name='xtpr'/>
-    <feature policy='disable' name='pdcm'/>
+    <feature policy='require' name='ht'/>
+    <feature policy='require' name='tm'/>
+    <feature policy='require' name='pbe'/>
+    <feature policy='require' name='dtes64'/>
+    <feature policy='require' name='monitor'/>
+    <feature policy='require' name='ds_cpl'/>
+    <feature policy='require' name='vmx'/>
+    <feature policy='require' name='smx'/>
+    <feature policy='require' name='est'/>
+    <feature policy='require' name='tm2'/>
+    <feature policy='require' name='xtpr'/>
+    <feature policy='require' name='pdcm'/>
     <feature policy='require' name='pcid'/>
-    <feature policy='disable' name='dca'/>
-    <feature policy='disable' name='osxsave'/>
+    <feature policy='require' name='dca'/>
+    <feature policy='require' name='osxsave'/>
     <feature policy='require' name='arat'/>
     <feature policy='require' name='xsaveopt'/>
     <feature policy='require' name='pdpe1gb'/>
-    <feature policy='require' name='hypervisor'/>
   </cpu>
   <clock offset='utc'/>
   <on_poweroff>destroy</on_poweroff>
