@@ -39,6 +39,6 @@ src_install() {
 	exeinto /usr/libexec/${PN}/templates
 	doexe templates/*.sh
 
-	into /usr/share/${PN}/templates
-	dolib templates/neo.xml
+	insinto /usr/share/${PN}/templates
+	doins templates/neo.xml
 }
