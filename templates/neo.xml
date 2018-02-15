@@ -11,7 +11,7 @@
   <os>
     <type arch='x86_64' machine='pc-1.2'>hvm</type>
     <kernel>/var/lib/libvirt/boot/kernel-minimal</kernel>
-    <cmdline>root=/dev/vda console=hvc0 clocksource=hpet</cmdline>
+    <cmdline>root=/dev/vda console=tty1 console=hvc0 clocksource=hpet</cmdline>
     <boot dev='hd'/>
     <bootmenu enable='no'/>
   </os>
