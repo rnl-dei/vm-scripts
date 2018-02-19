@@ -20,7 +20,7 @@
     <apic/>
     <pae/>
   </features>
-  <cpu mode='custom' match='exact' check='full'>
+  <cpu mode='custom' match='exact' check='partial'>
     <model fallback='forbid'>SandyBridge</model>
     <vendor>Intel</vendor>
     <feature policy='require' name='vme'/>
