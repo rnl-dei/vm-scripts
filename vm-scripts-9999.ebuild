@@ -25,7 +25,7 @@ IUSE=""
 DEPEND=""
 
 RDEPEND="${DEPEND}
-	app-shells/bash
+	>=app-shells/bash-4
 	app-emulation/libvirt
 	sys-apps/gawk"
 
@@ -35,6 +35,7 @@ src_install() {
 	newbin vm-stage4.sh vm-stage4
 	newbin vm-list.awk vm-list
 	newbin vm-ksm.sh vm-ksm
+	newbin vm-sysrq.sh vm-sysrq
 
 	exeinto /usr/libexec/${PN}/lib
 	doexe lib/*.sh

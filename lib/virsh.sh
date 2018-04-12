@@ -83,3 +83,9 @@ function virsh_get_mac_address() {
 	local name=$1
 	echo $(virsh domiflist $name | awk '/bridge/{print$NF}')
 }
+
+function virsh_send_key {
+	local name=$1
+	shift
+	run virsh send-key $name "$@" | quote_output
+}

@@ -23,6 +23,12 @@ function prompt() {
 	eval $var=\"$tmp\"
 }
 
+
+function error () {
+	echo -e $RED"$1"$NORMAL >&2
+}
+
+
 function warning() {
 	echo -e $RED"$1"$NORMAL
 }
