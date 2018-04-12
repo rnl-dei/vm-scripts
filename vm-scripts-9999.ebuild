@@ -26,7 +26,6 @@ DEPEND=""
 
 RDEPEND="${DEPEND}
 	>=app-shells/bash-4
-	app-emulation/libvirt
 	sys-apps/gawk"
 
 src_install() {
