@@ -1,14 +1,14 @@
-# Copyright 2016 RNL
+# Copyright 2018 RNL
 
-EAPI="5"
+EAPI="6"
 
-inherit git-2
+inherit git-r3
 
 DESCRIPTION="Scripts to help manage libvirt VMs"
-HOMEPAGE="http://atenas.rnl.tecnico.ulisboa.pt/servidores/vm-scripts"
+HOMEPAGE="https://ark.rnl.tecnico.ulisboa.pt/Servidores/vm-scripts"
 SRC_URI=""
-EGIT_REPO_URI="git://source.rnl.ist.utl.pt/${PN}.git"
-EGIT_STORE_DIR="${T}/egit-src"
+EGIT_REPO_URI="https://source.rnl.tecnico.ulisboa.pt/Servidores/${PN}.git"
+EGIT3_STORE_DIR="${T}/egit-src"
 
 if [[ ${PV} == *9999* ]]; then
 	EGIT_COMMIT="master"
