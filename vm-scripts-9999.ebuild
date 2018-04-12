@@ -24,7 +24,10 @@ IUSE=""
 
 DEPEND=""
 
-RDEPEND="${DEPEND}"
+RDEPEND="${DEPEND}
+	app-shells/bash
+	app-emulation/libvirt
+	sys-apps/gawk"
 
 src_install() {
 
