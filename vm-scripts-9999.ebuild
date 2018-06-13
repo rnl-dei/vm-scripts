@@ -11,7 +11,6 @@ EGIT_REPO_URI="https://source.rnl.tecnico.ulisboa.pt/Servidores/${PN}.git"
 EGIT3_STORE_DIR="${T}/egit-src"
 
 if [[ ${PV} == *9999* ]]; then
-	EGIT_COMMIT="master"
 	KEYWORDS="~amd64"
 else
 	EGIT_COMMIT="${PV}"
