@@ -2,7 +2,7 @@
 
 EAPI="6"
 
-inherit git-r3
+inherit git-r3 linux-info
 
 DESCRIPTION="Scripts to help manage libvirt VMs"
 HOMEPAGE="https://ark.rnl.tecnico.ulisboa.pt/Servidores/vm-scripts"
@@ -20,12 +20,13 @@ fi
 
 LICENSE="BSD-1"
 SLOT="0"
-IUSE=""
+IUSE="doc"
 
 DEPEND=""
 
 RDEPEND="${DEPEND}
 	>=app-shells/bash-4
+	sys-apps/coreutils
 	sys-apps/gawk"
 
 src_install() {
@@ -44,4 +45,20 @@ src_install() {
 
 	insinto /usr/share/${PN}/templates
 	doins templates/neo.xml
+
+	if use doc; then
+		local d
+		for d in README.*; do
+			dodoc $d
+		done
+	fi
+
+	newinitd ksm.init ksm
+}
+
+pkg_pretend() {
+	local CONFIG_CHECK="~KSM ~SYSFS"
+	local WARNING_KSM="CONFIG_KSM is required for KSM support."
+	local WARNING_SYSFS="CONFIG_SYSFS is required for enabling KSM."
+	[[ ${MERGE_TYPE} != buildonly ]] && check_extra_config
 }
