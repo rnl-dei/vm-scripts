@@ -1,0 +1,85 @@
+#!/sbin/openrc-run
+# Nuno Silva (2018)
+
+# https://www.kernel.org/doc/Documentation/vm/ksm.txt
+
+name="KSM (Kernel Samepage Merging)"
+description="Kernel-powered memory-saving de-duplication daemon"
+
+extra_started_commands="unmerge"
+description_unmerge="stop KSM and unmerge all pages currently merged"
+
+readonly ksm="/sys/kernel/mm/ksm"
+readonly ksm_run="$ksm/run"
+readonly ksm_shared="$ksm/pages_shared"
+readonly ksm_sharing="$ksm/pages_sharing"
+readonly ksm_full_scans="$ksm/full_scans"
+readonly page_size="$(getconf PAGE_SIZE)"
+
+depend() {
+	before libvirtd
+}
+
+test_support() {
+	ebegin "Testing $name support"
+	test -w $ksm_run
+	eend $?
+}
+
+start_pre() {
+	test_support
+}
+
+stop_pre() {
+	test_support
+}
+
+start() {
+	ebegin "Enabling $name"
+	echo 1 > $ksm_run
+	eend $?
+}
+
+stop() {
+	ebegin "Stopping $name"
+	echo 0 > $ksm_run
+	eend $?
+}
+
+unmerge() {
+	ebegin "Stopping $name and unmerging all pages"
+	echo 2 > $ksm_run
+	eend $?
+}
+
+
+status() {
+	if ! test_support; then
+		return 1
+	fi
+
+	local running=$(cat $ksm_run)
+	local shared=$(cat $ksm_shared)
+	local sharing=$(cat $ksm_sharing)
+	local full_scans=$(cat $ksm_full_scans)
+
+	local saving=$(( (sharing - shared) * page_size))
+	local saving_pretty=$(numfmt --to=iec-i --suffix=B $saving)
+	local shared_pretty=$(numfmt --to=si $shared)
+	local sharing_pretty=$(numfmt --to=si $sharing)
+	local full_scans_pretty=$(numfmt --to=si $full_scans)
+
+	if [[ "$running" = "1" ]]; then
+		einfo "$name is enabled:"
+		eindent
+		einfo "Full scan count: $full_scans_pretty"
+		einfo "Merged pages: $sharing_pretty"
+		einfo "Unique shared pages: $shared_pretty"
+		einfo "Saved: $saving_pretty"
+		eoutdent
+	else
+		einfo "$name is not enabled"
+	fi
+}
+
+# vim: filetype=gentoo-init-d
