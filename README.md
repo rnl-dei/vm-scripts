@@ -11,6 +11,13 @@ Interactive script to create new ready to use VMs with support for:
   * OS base image installation from a tarball
   * Scripted base image customization for each OS
 
+It makes some assumptions from our infrastructure:
+  * Calling `virsh` without a specific URI connects to the desired libvirt instance.
+  * VMs are to be created with raw file or LVM disks, and bridged networking.
+  * The `network.sh` code uses the whois client to get the network configuration from our [custom
+    whois server](https://github.com/rnl-dei/microwhoisd).
+  * The `os1_gentoo.sh` template has some values specific to our servers.
+
 ## vm-stage4.sh
 
 Create a tar.bz2 with the base image to create new VMs, either from a local directory or a remote host.
