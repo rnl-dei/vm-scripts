@@ -19,11 +19,11 @@ function customize_disk {
 
 	echo "Customizing the Gentoo disk image..."
 
-	# Definir o hostname
+	# Set the hostname
 
 	echo "hostname=\"$NAME\"" > $HOSTNAME_FILE
 
-	# Configurar a rede
+	# Network configuration
 
 	echo -e "dns_servers=\"$DNS_SERVERS\"" > $NETWORKING_FILE
 	echo -e "dns_search=\"rnl.tecnico.ulisboa.pt\"" >> $NETWORKING_FILE
@@ -36,7 +36,7 @@ function customize_disk {
 		echo -e "routes_lan0=\"default via $GATEWAY\"" >> $NETWORKING_FILE
 	fi
 
-	# Randomizar as horas dos cronjobs
+	# Randomize cronjob times
 
 	TMP_FILE=$(mktemp)
 
@@ -60,12 +60,12 @@ function customize_disk {
 
 	rm -f $TMP_FILE
 
-	# Configurar o email
+	# Email configuration
 
 	sed -i -e "s/^rewriteDomain.*/rewriteDomain=$NAME.rnl.tecnico.ulisboa.pt/" \
 	       -e "s/^hostname.*/hostname=$NAME.rnl.tecnico.ulisboa.pt/" $SSMTP_FILE
 
-	# Configurar o snmpd
+	# snmpd configuration
 
 	sed -i "s/^sysname.*/sysname ${NAME^}/" $SNMPD_FILE
 }
