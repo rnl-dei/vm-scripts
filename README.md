@@ -46,3 +46,8 @@ saving in a human-friendly way.
 * [CONFIG_SYSFS](https://www.kernel.org/doc/Documentation/filesystems/sysfs.txt)=y
 * [numfmt (coreutils)](https://www.gnu.org/software/coreutils/manual/html_node/numfmt-invocation.html)
 * getconf (glibc)
+
+## vm-baseline.sh
+
+Computes a baseline CPU which will be supported by all given hypervisors.
+Assumes SSH access to all hypervisors, as well as a local libvirt installation.

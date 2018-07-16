@@ -35,6 +35,7 @@ src_install() {
 	newbin vm-list.awk vm-list
 	newbin vm-ksm.sh vm-ksm
 	newbin vm-sysrq.sh vm-sysrq
+	newbin vm-baseline.sh vm-baseline
 
 	exeinto /usr/libexec/${PN}/lib
 	doexe lib/*.sh
