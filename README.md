@@ -51,3 +51,6 @@ saving in a human-friendly way.
 
 Computes a baseline CPU which will be supported by all given hypervisors.
 Assumes SSH access to all hypervisors, as well as a local libvirt installation.
+
+Can also be used to check that a given CPU will run on the hypervisors,
+using the `--compare` option.
