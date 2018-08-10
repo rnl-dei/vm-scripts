@@ -1,7 +1,7 @@
 #!/usr/bin/awk -f
 
 function sep() {
-	printf("----------------------------------------------------------------------------------------------------------------------\n")
+	printf("-------------------------------------------------------------------------------------------------------\n")
 }
 
 function vmwarn(name, msg) {
@@ -120,7 +120,7 @@ BEGIN {
 		}
 	}
 
-	printf(" %-20s %-15s %-9s %9s %24s %21s   %s\n", "Name", "State", "Autostart", "#CPU", "Memory", "Disk", "Description")
+	printf(" %-20s %-10s %-9s %9s %24s %10s   %s\n", "Name", "State", "Autostart", "#CPU", "Memory", "Disk", "Description")
 	sep()
 	n = -1
 	for(name in state) {
@@ -158,14 +158,14 @@ BEGIN {
 		else if (desc[name] == "who knowns...") # The typo is for real :D
 			desc[name] = RED desc[name] NORMAL
 
-		printf(" %-20s %s%-15s%s %s%-13s%s %5d %20d MiB %18d GB   %s\n", \
+		printf(" %-20s %s%-10s%s %s%-13s%s %5d %20d MiB %7d GB   %s\n", \
 		name, color1, state[name], NORMAL, color2, autostart[name], NORMAL, cpu[name], mem[name], used_disk[name], GRAY desc[name] NORMAL)
 
 	}
 
 	sep()
-	printf("Total online:         %-15d %14d / %2d %12d / %d MiB %18d GB\n", vm_running, cpu_running, TOTAL_CPUS, mem_running, TOTAL_MEM, disk_running);
-	printf("Total configured:     %15s %-9d %4d / %2d %12d / %d MiB %18d GB\n", " ", autostart_count, cpu_all, TOTAL_CPUS, mem_all, TOTAL_MEM, disk_all);
+	printf("Total online:         %-10d %14d / %2d %12d / %d MiB %7d GB\n", vm_running, cpu_running, TOTAL_CPUS, mem_running, TOTAL_MEM, disk_running);
+	printf("Total configured:     %10s %-9d %4d / %2d %12d / %d MiB %7d GB\n", " ", autostart_count, cpu_all, TOTAL_CPUS, mem_all, TOTAL_MEM, disk_all);
 
 	print("\nStorage stats")
 
