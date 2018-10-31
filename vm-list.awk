@@ -151,11 +151,15 @@ BEGIN {
 		if (autostart[name] == "enable") {
 			autostart_count += 1
 			color2 = GREEN
+			if(state[name] != "running") {
+				color1 = RED
+			}
 		}
-		else if (state[name] == "running")
+		else if (state[name] == "running") {
 			color2 = RED
-		else
+		} else {
 			color2 = GRAY
+		}
 
 		if (desc[name] == "")
 			desc[name] = RED "EMPTY" NORMAL
