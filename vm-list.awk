@@ -19,6 +19,10 @@ BEGIN {
 
 	print("Hypervisor info:")
 
+	"virsh hostname" | getline
+	HOSTNAME=$1
+	print("  Hostname: "HOSTNAME)
+
 	"nproc" | getline
 	TOTAL_CPUS = $1
 
