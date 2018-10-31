@@ -26,13 +26,13 @@ BEGIN {
 	"nproc" | getline
 	TOTAL_CPUS = $1
 
-	print("  "TOTAL_CPUS " CPUs")
+	print("  CPU count: "TOTAL_CPUS)
 
 	while (getline < "/proc/meminfo") {
 		if ($1 == "MemTotal:")
 			TOTAL_MEM = int($2 / 1024)
 	}
-	print("  "TOTAL_MEM " MiB RAM")
+	print("  RAM: "TOTAL_MEM " MiB")
 
 	while ("virsh list --name --all" | getline) {
 		name = $1
