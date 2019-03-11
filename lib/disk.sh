@@ -192,7 +192,7 @@ function guess_script_template() {
 	local os_script=${TEMPLATES_LOCATION}/os?_${os}.sh
 
 	echo "The new VM seems to have a ${os} filesystem."
-	prompt "Do you want to costumize it with the script ${os_script}?" CUSTOMIZE Y
+	prompt "Do you want to customize it with the script ${os_script}?" CUSTOMIZE Y
 
 	if [[ $CUSTOMIZE == [yY] ]]; then
 		source $os_script
@@ -302,7 +302,7 @@ function check_storage_config() {
 
 		customize)
 			if [[ $ROOT_DISK_FS_TEMPLATE_OS != 'none' ]]; then
-				info "Execute $ROOT_DISK_FS_TEMPLATE_OS costumization script $ROOT_DISK_FS_TEMPLATE_SCRIPT"
+				info "Execute $ROOT_DISK_FS_TEMPLATE_OS customization script $ROOT_DISK_FS_TEMPLATE_SCRIPT"
 			else
 				info "Try to guess existing disk OS to execute customization scripts"
 			fi

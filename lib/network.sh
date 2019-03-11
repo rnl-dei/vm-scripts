@@ -27,7 +27,7 @@ function network_from_ip() {
 
 		esac
 	# The output from whois must be given this way instead of a normal pipe
-	# because the variable assigments above are useless if done in a subshell
+	# because the variable assignments above are useless if done in a subshell
 	done < <(whois $ip)
 
 	NETWORK=$network
