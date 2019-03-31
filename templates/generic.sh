@@ -41,7 +41,8 @@ if [[ ! $SWAP_SIZE =~ ^0 ]]; then
 
 	echo "Create swap file..."
 	dd if=/dev/zero of=${NEWVM_MOUNTPOINT}/swapfile bs=${block_size} count=${count} 2>&1 | quote_output
-	mkswap ${NEWVM_MOUNTPOINT}/swapfile | quote_output
+	chmod -c 0600 ${NEWVM_MOUNTPOINT}/swapfile | quote_output
+	mkswap --label "$NAME-swap" ${NEWVM_MOUNTPOINT}/swapfile | quote_output
 
 # Ou comentar no fstab (caso o template tenha swap configurada)
 else
