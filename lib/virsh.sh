@@ -30,7 +30,7 @@ function virsh_define_vm() {
 	virsh_cmd desc $name --new-desc "$description" \
 	|| warning "make sure description does not have words starting with '--'"
 
-	virsh_cmd setmaxmem $name $RAM_SIZE
+	virsh_cmd setmaxmem $name $MAX_RAM_SIZE
 	virsh_cmd setmem $name $RAM_SIZE
 
 	virsh_cmd setvcpus $name --maximum $MAX_NUM_CPU
