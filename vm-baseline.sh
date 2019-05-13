@@ -3,6 +3,7 @@
 # Compute a baseline CPU which will be supported by all given hypervisors.
 
 username=root
+store_host_caps=true
 
 function virsh_cmd {
 	host=$1
@@ -33,7 +34,12 @@ function cpu_baseline {
 	fi
 
 	for h in $@; do
-		virsh_cmd $h capabilities >> $CAPS_FILE
+		if $store_host_caps; then
+			echo "capabilities.$h.xml"
+			virsh_cmd $h capabilities | tee capabilities.$h.xml >> $CAPS_FILE
+		else
+			virsh_cmd $h capabilities >> $CAPS_FILE
+		fi
 	done
 
 
