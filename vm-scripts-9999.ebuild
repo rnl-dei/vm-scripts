@@ -28,7 +28,8 @@ RDEPEND="${DEPEND}
 	sys-apps/coreutils
 	app-misc/timestamp
 	app-emulation/libvirt
-	sys-apps/gawk"
+	sys-apps/gawk
+	net-misc/whois"
 
 src_install() {
 
