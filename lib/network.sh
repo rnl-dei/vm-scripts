@@ -48,7 +48,8 @@ function set_ip() {
 	echo "How do you want to choose the IP?"
 	echo "  1 - Define the IP address in the DNS server."
 	echo "  2 - Change the VM name to match an existing DNS name."
-	echo "  3 - Type the IP address to use."
+	echo "  3 - Use another existing DNS name (not recommented)."
+	echo "  4 - Type the IP address to use."
 	echo "  0 - Flip the table."
 
 	prompt "?" OPTION
@@ -62,6 +63,10 @@ function set_ip() {
 			ip_from_dns $NAME
 			;;
 		3)
+			prompt "What is the DNS name?" DNS_NAME $NAME
+			ip_from_dns $DNS_NAME
+			;;
+		4)
 			prompt "Type the IP address: " IP
 			;;
 		0)
@@ -139,7 +144,7 @@ function ask_network_settings {
 			prompt "Did you fix it already?" REVERSE_DNS
 		done
 
-		info "Matching DNS name found: $NAME"
+		info "Matching DNS name found: $REVERSE_DNS"
 
 		info "IPv4 address: $IP/$NETMASK"
 		info "IPv4 gateway: $GATEWAY"
