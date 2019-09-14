@@ -19,8 +19,10 @@ function prompt() {
 
 	local tmp
 	read tmp
-	[[ $tmp == "" ]] && tmp="$default"
-	eval $var=\"$tmp\"
+	if [ -n "$var" ] ; then
+		[[ $tmp == "" ]] && tmp="$default"
+		eval $var=\"$tmp\"
+	fi
 }
 
 
