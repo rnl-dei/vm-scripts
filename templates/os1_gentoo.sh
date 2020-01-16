@@ -4,9 +4,40 @@ STAGE4_FILE=/usr/rnl-overlay/stage4/stage4-gentoo.tar.bz2
 
 HOSTNAME_FILE="$NEWVM_MOUNTPOINT/etc/conf.d/hostname"
 NETWORKING_FILE="$NEWVM_MOUNTPOINT/etc/conf.d/net"
-CRONTAB_FILE="$NEWVM_MOUNTPOINT/etc/crontab"
+
+# crontab files which need to be randomized
+CRONTAB_FILES="$NEWVM_MOUNTPOINT/etc/crontab
+	$NEWVM_MOUNTPOINT/etc/cron.d/dailyjobs
+	$NEWVM_MOUNTPOINT/etc/cron.d/0hourly
+"
+
 SSMTP_FILE="$NEWVM_MOUNTPOINT/etc/ssmtp/ssmtp.conf"
 SNMPD_FILE="$NEWVM_MOUNTPOINT/etc/snmp/snmpd.conf"
+
+# randomize crontab files so machines don't run them at the same time
+# only changes the "minutes" field of known cronjobs
+function randomize_cron_file {
+	local CRONTAB_FILE="$1"
+	TMP_FILE=$(mktemp) || return 1
+
+	cp $CRONTAB_FILE $TMP_FILE || return 1
+
+	awk '
+	BEGIN {
+		srand(systime())
+	}
+	{
+		if(/^[ \t]*([0-9*]+[ \t]+){5}.*(run-parts|lastrun).*\/cron\.)/) {
+			# replace the first field (minute)
+			$1 = int(rand() * 60)
+		}
+		print
+	}
+	' $TMP_FILE > $CRONTAB_FILE || return 1
+
+	rm -f $TMP_FILE
+	return 0
+}
 
 function customize_disk {
 
@@ -37,28 +68,9 @@ function customize_disk {
 	fi
 
 	# Randomize cronjob times
-
-	TMP_FILE=$(mktemp)
-
-	cp $CRONTAB_FILE $TMP_FILE
-
-	cat $TMP_FILE | awk '
-	BEGIN {
-		srand(systime())
-		hourly = int(rand() * 60)
-		other = int(rand() * 60)
-	}
-	{
-		if(/lastrun\/cron.hourly$/)
-			printf("%2d %s  %s %s %s\troot\trm -f %s\n", hourly, $2, $3, $4, $5, $NF)
-		else if (/lastrun\/cron..*$/)
-			printf("%2d %s  %s %s %s\troot\trm -f %s\n", other, $2, $3, $4, $5, $NF)
-		else
-			print
-	}
-	' > $CRONTAB_FILE
-
-	rm -f $TMP_FILE
+	for tab in $CRONTAB_FILES; do
+		randomize_cron_file $tab || warning "Failed to randomize crontab $tab"
+	done
 
 	# Email configuration
 
