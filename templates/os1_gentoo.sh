@@ -1,6 +1,6 @@
 # Gentoo specific template
 
-STAGE4_FILE=/usr/rnl-overlay/stage4/stage4-gentoo.tar.bz2
+STAGE4_FILE=/var/db/repos/rnl/stage4/stage4-gentoo.tar.bz2
 
 HOSTNAME_FILE="$NEWVM_MOUNTPOINT/etc/conf.d/hostname"
 NETWORKING_FILE="$NEWVM_MOUNTPOINT/etc/conf.d/net"
