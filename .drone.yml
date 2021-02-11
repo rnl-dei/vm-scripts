@@ -1,0 +1,11 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: syntax check scripts
+    image: gentoo/stage3 # for gawk
+    commands:
+      - find -type f \( -name '*.sh' -or -name '*.init' \) | xargs -r -t -n1 bash -rn --
+      - find -name '*.awk' -type f | xargs -r --verbose -n1 gawk --lint=no-ext --source 'BEGIN { exit(0) } END { exit(0) }' --file
